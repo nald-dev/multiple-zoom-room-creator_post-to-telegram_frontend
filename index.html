@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Kucing Mumu RnD
+        </title>
+
+        <script>
+            let startTime = "2021-07-31T10:00:00"
+            let data = [
+                {
+                    id: 0,
+                    class_name: 'Android',
+                    activity_name: 'Export APK',
+                    password: 123456,
+                    telegram_student_group_chat_id: 99991
+                },
+                {
+                    id: 1,
+                    class_name: 'Web',
+                    activity_name: 'CSS',
+                    password: 123456,
+                    telegram_student_group_chat_id: 99992
+                },
+                {
+                    id: 2,
+                    class_name: 'Design UI/UX',
+                    activity_name: 'Target pasar dan target audiens',
+                    password: 123456,
+                    telegram_student_group_chat_id: 99993
+                },
+                {
+                    id: 3,
+                    class_name: 'React-Native',
+                    activity_name: 'AsyncStorage',
+                    password: 123456,
+                    telegram_student_group_chat_id: 99994
+                }
+            ]
+
+            function addData() {
+                data.push('')
+
+                rerenderForm()
+            }
+
+            function rerenderForm() {
+                document.getElementById('start-time').value = startTime
+
+                document.getElementById('form-container').innerHTML = ''
+                
+                for (const item of data) {
+                    document.getElementById('form-container').innerHTML += `
+                        <div>
+                            <input
+                                id="fasilitator-username-${item.id}"
+                                placeholder="Class Name"
+                                value="${item.class_name}"
+                            />
+
+                            <input
+                                placeholder="Activity Name"
+                                style="width:200px;"
+                                value="${item.activity_name}"
+                            />
+                    
+                            <input
+                                placeholder="Password"
+                                value="${item.password}"
+                                style="width:75px;"
+                            />
+
+                            <input
+                                placeholder="Telegram Student Group Chat ID"
+                                value="${item.telegram_student_group_chat_id}"
+                                style="width:225px;"
+                            />
+                        </div>
+                    `
+                }
+            }
+
+            async function createRooms() {
+                let createdRoomsData = []
+
+                const res = await fetch(
+                    'http://localhost:3000/create-rooms',
+                    {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            data,
+                            start_time: startTime
+                        })
+                    }
+                )
+
+                const resJSON = await res.json()
+
+                startTime = '2021-08-07T10:00:00'
+
+                for (const item of data) {
+                    item.activity_name = ''
+                }
+
+                rerenderForm()
+            }
+
+            window.onload = () => {
+                rerenderForm()
+            }
+        </script>
+    </head>
+
+    <body>
+        <h1>
+            Weekly Industrial Class Zoom Rooms Creator
+        </h1>
+
+        <div
+            style="display: flex; margin-bottom: 20px;"
+        >
+            <div
+                style="margin-right: 10px;"
+            >
+                Activities Datetime:
+            </div>
+
+            <input
+                id="start-time"
+                placeholder="Start Time"
+                type="datetime-local"
+            />
+
+            <a
+                href="javascript:createRooms()"
+                style="margin-left:20px;"
+            >
+                Create Rooms
+            </a>
+        </div>
+
+        <div
+            id="form-container"
+        >
+        </div>
+
+        <div
+            style="margin-top: 20px;"
+        >
+            <a
+                href="javascript:addData()"
+                style="margin-right: 20px;"
+            >
+                Add New Row
+            </a>
+
+            <a
+                href="javascript:void(0)"
+            >
+                Notify Other Fasilitator To Complete
+            </a>
+        </div>
+    </body>
+</html>
